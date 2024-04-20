@@ -1,8 +1,8 @@
-package com.example.opr3cv9.service;
+package com.example.oopr3cv9.service;
 
 
 
-import com.example.opr3cv9.model.User;
+import com.example.oopr3cv9.model.User;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ public interface UserService {
 
     User getUserById(Long userId);
 
-    List<User> getAllUsers();
+    List<User> getAllUsers(boolean isAdmin);
 
     void deleteUserById(Long userId);
 }

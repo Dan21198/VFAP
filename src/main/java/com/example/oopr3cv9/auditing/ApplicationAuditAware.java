@@ -1,7 +1,7 @@
-package com.example.opr3cv9.auditing;
+package com.example.oopr3cv9.auditing;
 
 
-import com.example.opr3cv9.model.User;
+import com.example.oopr3cv9.model.User;
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;

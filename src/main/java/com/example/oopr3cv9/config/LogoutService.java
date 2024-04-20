@@ -1,6 +1,6 @@
-package com.example.opr3cv9.config;
+package com.example.oopr3cv9.config;
 
-import com.example.opr3cv9.token.TokenRepository;
+import com.example.oopr3cv9.token.TokenRepository;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;

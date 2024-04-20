@@ -1,4 +1,4 @@
-package com.example.opr3cv9.config;
+package com.example.oopr3cv9.config;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;

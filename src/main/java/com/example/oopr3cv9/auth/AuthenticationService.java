@@ -1,11 +1,11 @@
-package com.example.opr3cv9.auth;
+package com.example.oopr3cv9.auth;
 
-import com.example.opr3cv9.config.JwtService;
-import com.example.opr3cv9.model.User;
-import com.example.opr3cv9.repository.UserRepository;
-import com.example.opr3cv9.token.Token;
-import com.example.opr3cv9.token.TokenRepository;
-import com.example.opr3cv9.token.TokenType;
+import com.example.oopr3cv9.config.JwtService;
+import com.example.oopr3cv9.model.User;
+import com.example.oopr3cv9.repository.UserRepository;
+import com.example.oopr3cv9.token.Token;
+import com.example.oopr3cv9.token.TokenRepository;
+import com.example.oopr3cv9.token.TokenType;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -31,8 +31,8 @@ public class AuthenticationService {
     var user = User.builder()
         .userName(request.getUserName())
         .email(request.getEmail())
-        .passwordHash(passwordEncoder.encode(request.getPasswordHash()))
-        .role(String.valueOf(request.getRole()))
+        .passwordHash(passwordEncoder.encode(request.getPassword()))
+        .role("USER")
         .build();
     var savedUser = repository.save(user);
     var jwtToken = jwtService.generateToken(user);
@@ -83,6 +83,21 @@ public class AuthenticationService {
       token.setRevoked(true);
     });
     tokenRepository.saveAll(validUserTokens);
+  }
+
+  public void logout(HttpServletRequest request) {
+    final String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
+    final String accessToken;
+    final String userEmail;
+
+    if (authHeader != null && authHeader.startsWith("Bearer ")) {
+      accessToken = authHeader.substring(7);
+      userEmail = jwtService.extractUsername(accessToken);
+      if (userEmail != null) {
+        var user = repository.findByEmail(userEmail).orElseThrow();
+        revokeAllUserTokens(user);
+      }
+    }
   }
 
   public void refreshToken(

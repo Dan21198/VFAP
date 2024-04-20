@@ -1,4 +1,4 @@
-package com.example.opr3cv9.exception;
+package com.example.oopr3cv9.exception;
 
 public class NotFoundException extends RuntimeException {
 

@@ -1,6 +1,6 @@
-package com.example.opr3cv9.token;
+package com.example.oopr3cv9.token;
 
-import com.example.opr3cv9.model.User;
+import com.example.oopr3cv9.model.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;

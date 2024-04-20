@@ -1,6 +1,6 @@
-package com.example.opr3cv9.auth;
+package com.example.oopr3cv9.auth;
 
-import com.example.opr3cv9.role.Role;
+import com.example.oopr3cv9.role.Role;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,6 +14,5 @@ public class RegisterRequest {
 
   private String userName;
   private String email;
-  private String passwordHash;
-  private Role role;
+  private String password;
 }

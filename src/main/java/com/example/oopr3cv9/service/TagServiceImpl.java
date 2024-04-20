@@ -1,23 +1,31 @@
-package com.example.opr3cv9.service;
+package com.example.oopr3cv9.service;
 
-import com.example.opr3cv9.exception.NotFoundException;
-import com.example.opr3cv9.model.Note;
-import com.example.opr3cv9.model.Tag;
-import com.example.opr3cv9.repository.NoteRepository;
-import com.example.opr3cv9.repository.TagRepository;
+
+import com.example.oopr3cv9.exception.NotFoundException;
+import com.example.oopr3cv9.model.Note;
+import com.example.oopr3cv9.model.Tag;
+import com.example.oopr3cv9.model.User;
+import com.example.oopr3cv9.repository.NoteRepository;
+import com.example.oopr3cv9.repository.TagRepository;
+import com.example.oopr3cv9.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class TagServiceImpl implements TagService{
     private final TagRepository tagRepository;
     private final NoteRepository noteRepository;
+    private final UserRepository userRepository;
 
-    @Override
     public Tag createTag(Tag tag) {
         return tagRepository.save(tag);
     }
@@ -29,11 +37,28 @@ public class TagServiceImpl implements TagService{
     }
 
     @Override
-    public List<Tag> getAllTags() {
-        return tagRepository.findAll();
+    public List<Tag> getAllTags(String userEmail) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        boolean isAdmin = authentication.getAuthorities().stream()
+                .anyMatch(grantedAuthority -> grantedAuthority.getAuthority().equals("ROLE_ADMIN"));
+
+        if (isAdmin) {
+            return tagRepository.findAll();
+        } else {
+            Optional<User> userOptional = userRepository.findByEmail(userEmail);
+            if (!userOptional.isPresent()) {
+                throw new NotFoundException("User not found with email: " + userEmail);
+            }
+            return tagRepository.findAllByUserId(userOptional.get().getId());
+        }
     }
 
-    @Override
+
+    public List<Tag> getTagsByNoteId(Long noteId) {
+        return tagRepository.findAllByNotesId(noteId);
+    }
+
+        @Override
     public void deleteTag(Long id) {
         Tag tag = getTagById(id);
         tagRepository.delete(tag);

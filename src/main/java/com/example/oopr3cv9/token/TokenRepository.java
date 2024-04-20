@@ -1,4 +1,4 @@
-package com.example.opr3cv9.token;
+package com.example.oopr3cv9.token;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -16,4 +16,6 @@ public interface TokenRepository extends JpaRepository<Token, Integer> {
   List<Token> findAllValidTokenByUser(Integer id);
 
   Optional<Token> findByToken(String token);
+
+  void deleteByUserId(Long userId);
 }

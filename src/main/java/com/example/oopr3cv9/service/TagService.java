@@ -1,15 +1,21 @@
-package com.example.opr3cv9.service;
+package com.example.oopr3cv9.service;
 
-import com.example.opr3cv9.model.Tag;
+
+
+import com.example.oopr3cv9.model.Note;
+import com.example.oopr3cv9.model.Tag;
 
 import java.util.List;
+import java.util.Set;
 
 public interface TagService {
     Tag createTag(Tag tag);
 
     Tag getTagById(Long id);
 
-    List<Tag> getAllTags();
+    List<Tag> getAllTags(String userEmail);
+
+    List<Tag> getTagsByNoteId(Long noteId);
 
     void deleteTag(Long id);
 

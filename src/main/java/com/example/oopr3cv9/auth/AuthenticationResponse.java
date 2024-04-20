@@ -1,4 +1,4 @@
-package com.example.opr3cv9.auth;
+package com.example.oopr3cv9.auth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

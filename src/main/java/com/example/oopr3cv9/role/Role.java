@@ -1,4 +1,4 @@
-package com.example.opr3cv9.role;
+package com.example.oopr3cv9.role;
 
 import lombok.Getter;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

@@ -1,5 +1,8 @@
-package com.example.opr3cv9.model;
+package com.example.oopr3cv9.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -21,6 +24,7 @@ public class Tag {
 
     private String name;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "tags")
     private Set<Note> notes = new HashSet<>();
 }

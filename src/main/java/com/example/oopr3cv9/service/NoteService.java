@@ -1,15 +1,16 @@
-package com.example.opr3cv9.service;
+package com.example.oopr3cv9.service;
 
-import com.example.opr3cv9.model.Note;
+import com.example.oopr3cv9.model.Note;
+import com.example.oopr3cv9.model.User;
 
 import java.util.List;
 
 public interface NoteService {
-    Note saveOrUpdateNote(Note note);
+    Note saveOrUpdateNote(Note note, User user);
 
     Note getNoteById(Long noteId);
 
-    List<Note> getAllNotes();
+    List<Note> getAllNotes(String email);
 
     void deleteNoteById(Long noteId);
 

@@ -1,8 +1,8 @@
-package com.example.opr3cv9.config;
+package com.example.oopr3cv9.config;
 
 
-import com.example.opr3cv9.auditing.ApplicationAuditAware;
-import com.example.opr3cv9.repository.UserRepository;
+import com.example.oopr3cv9.auditing.ApplicationAuditAware;
+import com.example.oopr3cv9.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,8 +15,10 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
+@EnableTransactionManagement
 @RequiredArgsConstructor
 public class ApplicationConfig {
 

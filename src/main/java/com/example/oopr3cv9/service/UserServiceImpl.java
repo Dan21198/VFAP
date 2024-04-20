@@ -1,10 +1,15 @@
-package com.example.opr3cv9.service;
+package com.example.oopr3cv9.service;
 
-import com.example.opr3cv9.model.User;
-import com.example.opr3cv9.repository.UserRepository;
+import com.example.oopr3cv9.model.User;
+import com.example.oopr3cv9.repository.UserRepository;
+import com.example.oopr3cv9.token.TokenRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -13,6 +18,7 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService{
 
     private final UserRepository userRepository;
+    private final TokenRepository tokenRepository;
 
     @Override
     public User saveOrUpdateUser(User user) {
@@ -26,12 +32,27 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<User> getAllUsers() {
-        return userRepository.findAll();
+    public List<User> getAllUsers(boolean isAdmin) {
+        if (isAdmin) {
+            return userRepository.findAll();
+        } else {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String userEmail = authentication.getName();
+            Optional<User> currentUser = userRepository.findByEmail(userEmail);
+
+            return currentUser.map(Collections::singletonList).orElse(Collections.emptyList());
+        }
     }
 
     @Override
+    @Transactional
     public void deleteUserById(Long userId) {
-        userRepository.deleteById(userId);
+        Optional<User> userOptional = userRepository.findById(userId);
+
+        userOptional.ifPresent(user -> {
+            tokenRepository.deleteByUserId(userId);
+            userRepository.deleteById(userId);
+        });
     }
+
 }
