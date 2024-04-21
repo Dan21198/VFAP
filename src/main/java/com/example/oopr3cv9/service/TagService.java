@@ -4,6 +4,7 @@ package com.example.oopr3cv9.service;
 
 import com.example.oopr3cv9.model.Note;
 import com.example.oopr3cv9.model.Tag;
+import com.example.oopr3cv9.model.User;
 
 import java.util.List;
 import java.util.Set;

@@ -27,4 +27,9 @@ public class Tag {
     @JsonIgnore
     @ManyToMany(mappedBy = "tags")
     private Set<Note> notes = new HashSet<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnore
+    private User user;
 }

@@ -2,6 +2,10 @@ package com.example.oopr3cv9.controller;
 
 import com.example.oopr3cv9.model.Note;
 import com.example.oopr3cv9.model.Tag;
+import com.example.oopr3cv9.model.TagDto;
+import com.example.oopr3cv9.model.User;
+import com.example.oopr3cv9.repository.TagRepository;
+import com.example.oopr3cv9.repository.UserRepository;
 import com.example.oopr3cv9.service.TagServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -9,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,12 +25,23 @@ import java.util.Set;
 @CrossOrigin(origins = "http://localhost:4200")
 public class TagController {
     private final TagServiceImpl tagService;
+    private final UserRepository userRepository;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))")
-    public ResponseEntity<Tag> createTag(@RequestBody Tag tag) {
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
+    public ResponseEntity<Tag> createTag(@RequestBody TagDto tagDto, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails == null) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+        }
+
+        Tag tag = new Tag();
+        tag.setName(tagDto.getName());
+        User user = userRepository.findByEmail(userDetails.getUsername())
+                .orElseThrow(() -> new UsernameNotFoundException("User not found"));
+
+        tag.setUser(user);
         Tag createdTag = tagService.createTag(tag);
-        return new ResponseEntity<>(createdTag, HttpStatus.CREATED);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdTag);
     }
 
     @GetMapping("/{id}")
@@ -36,12 +52,11 @@ public class TagController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))")
+    @PreAuthorize("hasRole('ADMIN') or hasRole('USER')")
     public ResponseEntity<List<Tag>> getAllTags(@AuthenticationPrincipal UserDetails userDetails) {
         String userEmail = userDetails.getUsername();
-
         List<Tag> tags = tagService.getAllTags(userEmail);
-        return ResponseEntity.ok(tags);
+        return new ResponseEntity<>(tags, HttpStatus.OK);
     }
 
     @GetMapping("/notes/{noteId}")

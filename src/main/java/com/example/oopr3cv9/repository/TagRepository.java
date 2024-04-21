@@ -11,8 +11,7 @@ import java.util.List;
 
 @Repository
 public interface TagRepository extends JpaRepository<Tag, Long> {
-    @Query("SELECT DISTINCT t FROM Tag t LEFT JOIN t.notes n WHERE n.user.id = :userId OR n IS NULL")
-    List<Tag> findAllByUserId(@Param("userId") Long userId);
+    List<Tag> findAllByUserId(Long userId);
 
     List<Tag> findAllByNotesId(Long noteId);
 
