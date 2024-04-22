@@ -13,4 +13,8 @@ public class NotFoundException extends RuntimeException {
     public NotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
+
+    public NotFoundException(String entity, Long id) {
+        super(entity + " not found with id: " + id);
+    }
 }

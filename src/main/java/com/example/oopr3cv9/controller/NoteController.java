@@ -1,8 +1,10 @@
 package com.example.oopr3cv9.controller;
 
 import com.example.oopr3cv9.model.Note;
+import com.example.oopr3cv9.model.Tag;
 import com.example.oopr3cv9.model.User;
 import com.example.oopr3cv9.service.NoteService;
+import com.example.oopr3cv9.service.TagService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +24,7 @@ import java.util.List;
 public class NoteController {
 
     private final NoteService noteService;
+    private final TagService tagService;
 
     @GetMapping("/{noteId}")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))")
@@ -47,6 +50,20 @@ public class NoteController {
         return new ResponseEntity<>(notes, HttpStatus.OK);
     }
 
+    @GetMapping("/finished/{finished}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))")
+    public ResponseEntity<List<Note>> getNotesByFinishedStatus(@PathVariable boolean finished) {
+        List<Note> notes = noteService.getNotesByFinishedStatus(finished);
+        return new ResponseEntity<>(notes, HttpStatus.OK);
+    }
+
+    @GetMapping("/tag/{tagId}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))")
+    public ResponseEntity<List<Note>> getNotesByTag(@PathVariable Long tagId) {
+        Tag tag = tagService.getTagById(tagId);
+        List<Note> notes = noteService.getNotesByTag(tag);
+        return new ResponseEntity<>(notes, HttpStatus.OK);
+    }
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN', 'USER')")

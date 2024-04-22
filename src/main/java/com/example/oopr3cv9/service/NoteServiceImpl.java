@@ -1,23 +1,22 @@
 package com.example.oopr3cv9.service;
 
+import com.example.oopr3cv9.exception.NotFoundException;
 import com.example.oopr3cv9.model.Note;
+import com.example.oopr3cv9.model.Tag;
 import com.example.oopr3cv9.model.User;
 import com.example.oopr3cv9.repository.NoteRepository;
-import com.example.oopr3cv9.repository.UserRepository;
+import com.example.oopr3cv9.auth.AuthenticationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 @Service
 @RequiredArgsConstructor
 public class NoteServiceImpl implements NoteService{
     private final NoteRepository noteRepository;
-    private final UserRepository userRepository;
+    private final AuthenticationService authService;
 
     public Note saveOrUpdateNote(Note note, User user) {
         note.setUser(user);
@@ -25,27 +24,27 @@ public class NoteServiceImpl implements NoteService{
     }
 
     public Note getNoteById(Long noteId) {
-        return noteRepository.findById(noteId).orElse(null);
+        return noteRepository.findById(noteId).orElseThrow(()
+                -> new NotFoundException("Note", noteId));
     }
 
     public List<Note> getAllNotes(String userEmail) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
-
         List<Note> userNotes = new ArrayList<>();
-
-        if (isAdmin) {
+        if (authService.isAdmin()) {
             userNotes = noteRepository.findAll();
         } else {
-            Optional<User> userOptional = userRepository.findByEmail(userEmail);
-            if (userOptional.isPresent()) {
-                User currentUser = userOptional.get();
-                userNotes = noteRepository.findAllByUserId(currentUser.getId());
-            }
+            User currentUser = authService.getCurrentUser(userEmail);
+            userNotes = noteRepository.findAllByUserId(currentUser.getId());
         }
         return userNotes;
+    }
+
+    public List<Note> getNotesByFinishedStatus(boolean finished) {
+        return noteRepository.findAllByFinished(finished);
+    }
+
+    public List<Note> getNotesByTag(Tag tag) {
+        return noteRepository.findAllByTagsContains(tag);
     }
 
     public void deleteNoteById(Long noteId) {

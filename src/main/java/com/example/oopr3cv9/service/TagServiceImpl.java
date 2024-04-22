@@ -1,6 +1,7 @@
 package com.example.oopr3cv9.service;
 
 
+import com.example.oopr3cv9.auth.AuthenticationService;
 import com.example.oopr3cv9.exception.NotFoundException;
 import com.example.oopr3cv9.model.Note;
 import com.example.oopr3cv9.model.Tag;
@@ -24,7 +25,7 @@ import java.util.Optional;
 public class TagServiceImpl implements TagService{
     private final TagRepository tagRepository;
     private final NoteRepository noteRepository;
-    private final UserRepository userRepository;
+    private final AuthenticationService authService;
 
     @Override
     public Tag createTag(Tag tag) {
@@ -39,19 +40,12 @@ public class TagServiceImpl implements TagService{
 
     @Override
     public List<Tag> getAllTags(String userEmail) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        boolean isAdmin = authentication.getAuthorities().stream()
-                .anyMatch(role -> role.getAuthority().equals("ROLE_ADMIN"));
-        List<Tag> userTags = new ArrayList<>();
-
-        if (isAdmin) {
+        List<Tag> userTags;
+        if (authService.isAdmin()) {
             userTags = tagRepository.findAll();
         } else {
-            Optional<User> userOptional = userRepository.findByEmail(userEmail);
-            if (userOptional.isPresent()) {
-                User currentUser = userOptional.get();
-                userTags = tagRepository.findAllByUserId(currentUser.getId());
-            }
+            User currentUser = authService.getCurrentUser(userEmail);
+            userTags = tagRepository.findAllByUserId(currentUser.getId());
         }
         return userTags;
     }
