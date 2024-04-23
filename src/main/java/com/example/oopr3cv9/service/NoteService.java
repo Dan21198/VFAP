@@ -13,9 +13,9 @@ public interface NoteService {
 
     List<Note> getAllNotes(String email);
 
-    List<Note> getNotesByFinishedStatus(boolean finished);
+    List<Note> getNotesByFinishedStatus(boolean finished, String email);
 
-    List<Note> getNotesByTag(Tag tag);
+    List<Note> getNotesByTag(Tag tag, String email);
 
     void deleteNoteById(Long noteId);
 

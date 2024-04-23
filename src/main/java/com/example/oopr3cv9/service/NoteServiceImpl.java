@@ -39,12 +39,26 @@ public class NoteServiceImpl implements NoteService{
         return userNotes;
     }
 
-    public List<Note> getNotesByFinishedStatus(boolean finished) {
-        return noteRepository.findAllByFinished(finished);
+    public List<Note> getNotesByFinishedStatus(boolean finished, String userEmail) {
+        List<Note> notes = new ArrayList<>();
+        if (authService.isAdmin()) {
+            notes = noteRepository.findAllByFinished(finished);
+        } else {
+            User currentUser = authService.getCurrentUser(userEmail);
+            notes = noteRepository.findAllByFinishedAndUserId(finished, currentUser.getId());
+        }
+        return notes;
     }
 
-    public List<Note> getNotesByTag(Tag tag) {
-        return noteRepository.findAllByTagsContains(tag);
+    public List<Note> getNotesByTag(Tag tag, String userEmail) {
+        List<Note> notes = new ArrayList<>();
+        if (authService.isAdmin()) {
+            notes = noteRepository.findAllByTagsContains(tag);
+        } else {
+            User currentUser = authService.getCurrentUser(userEmail);
+            notes = noteRepository.findAllByTagsContainsAndUserId(tag, currentUser.getId());
+        }
+        return notes;
     }
 
     public void deleteNoteById(Long noteId) {

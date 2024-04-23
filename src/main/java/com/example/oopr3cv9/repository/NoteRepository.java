@@ -16,4 +16,8 @@ public interface NoteRepository extends JpaRepository<Note, Long> {
     List<Note> findAllByFinished(boolean finished);
 
     List<Note> findAllByTagsContains(Tag tag);
+
+    List<Note> findAllByTagsContainsAndUserId(Tag tag, Long userId);
+
+    List<Note> findAllByFinishedAndUserId(boolean finished, Long userId);
 }

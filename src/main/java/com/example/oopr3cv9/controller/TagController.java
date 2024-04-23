@@ -22,7 +22,7 @@ import java.util.Set;
 @RestController
 @RequestMapping("/api/v1/tags")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class TagController {
     private final TagServiceImpl tagService;
     private final UserRepository userRepository;

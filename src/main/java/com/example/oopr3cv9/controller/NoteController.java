@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/notes")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
+@CrossOrigin(origins = "*")
 public class NoteController {
 
     private final NoteService noteService;
@@ -52,16 +51,20 @@ public class NoteController {
 
     @GetMapping("/finished/{finished}")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))")
-    public ResponseEntity<List<Note>> getNotesByFinishedStatus(@PathVariable boolean finished) {
-        List<Note> notes = noteService.getNotesByFinishedStatus(finished);
+    public ResponseEntity<List<Note>> getNotesByFinishedStatus(@PathVariable boolean finished, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
+        List<Note> notes = noteService.getNotesByFinishedStatus(finished, userEmail);
         return new ResponseEntity<>(notes, HttpStatus.OK);
     }
 
     @GetMapping("/tag/{tagId}")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER'))")
-    public ResponseEntity<List<Note>> getNotesByTag(@PathVariable Long tagId) {
+    public ResponseEntity<List<Note>> getNotesByTag(@PathVariable Long tagId, Authentication authentication) {
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
+        String userEmail = userDetails.getUsername();
         Tag tag = tagService.getTagById(tagId);
-        List<Note> notes = noteService.getNotesByTag(tag);
+        List<Note> notes = noteService.getNotesByTag(tag, userEmail);
         return new ResponseEntity<>(notes, HttpStatus.OK);
     }
 
